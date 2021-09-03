@@ -28,10 +28,20 @@ class Graph {
   }
 
   // this function accepts two vertices and updates their adjacent values to remove the other vertex
-  removeEdge(v1, v2) {}
+  removeEdge(v1, v2) {
+    v1.adjacent.delete(v2)
+    v2.adjacent.delete(v1)
+  }
 
   // this function accepts a vertex and removes it from the nodes property, it also updates any adjacency lists that include that vertex
-  removeVertex(vertex) {}
+  removeVertex(vertex) {
+    for (let node of this.nodes) {
+      if (node.adjacent.has(vertex)) {
+        node.adjacent.delete(vertex)
+      }
+    }
+    this.nodes.delete(vertex)
+  }
 
   // this function returns an array of Node values using DFS
   depthFirstSearch(start) {
@@ -54,7 +64,27 @@ class Graph {
   }
 
   // this function returns an array of Node values using BFS
-  breadthFirstSearch(start) {}
+  breadthFirstSearch(start) {
+    const queue = [start]
+    const nodes = []
+    const visited = new Set()
+    let current
+
+    visited.add(start)
+
+    while (queue.length) {
+      current = queue.shift()
+      nodes.push(current.value)
+
+      current.adjacent.forEach(adj => {
+        if (!visited.has(adj)) {
+          visited.add(adj)
+          queue.push(adj)
+        }
+      })
+    }
+    return nodes
+  }
 }
 
 module.exports = {Graph, Node}
